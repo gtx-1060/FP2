@@ -27,7 +27,7 @@ solve(A, B, C, N) ->
 solve_module() ->
     Triplets = make_triplets_list(1000),
     PythagoreanTriplets = lists:filter(fun(X) -> is_pythagorean(X) end, Triplets),
-    lists:foldl(fun({A,B,C}, Acc) -> Acc + A*B*C end, 0, PythagoreanTriplets).
+    lists:foldl(fun({A, B, C}, Acc) -> Acc + A * B * C end, 0, PythagoreanTriplets).
 
 is_pythagorean({A, B, C}) -> A * A + B * B == C * C.
 
@@ -47,7 +47,6 @@ make_triplets_list({A, B, C}, N) ->
             end
     end.
 
-
 %   *** lazy solution ***
 
 solve_lazy() ->
@@ -58,20 +57,21 @@ solve_lazy() ->
 
 find_pythogorian(Iter) ->
     case iterator_next(Iter) of
-        {A, B, C} -> 
-            if A*A + B*B == C*C ->
-                A*B*C;
-            true ->
-                find_pythogorian(Iter)
+        {A, B, C} ->
+            if
+                A * A + B * B == C * C ->
+                    A * B * C;
+                true ->
+                    find_pythogorian(Iter)
             end;
         {} ->
             0
     end.
 
-iterator_create() -> 
-    spawn(fun() -> iterator({1,1, 1000}, 1000) end).
+iterator_create() ->
+    spawn(fun() -> iterator({1, 1, 1000}, 1000) end).
 
-iterator_close(Iter) -> 
+iterator_close(Iter) ->
     case is_process_alive(Iter) of
         true ->
             Iter ! {close, self()};
@@ -81,15 +81,13 @@ iterator_close(Iter) ->
 
 iterator_next(Iter) ->
     Iter ! {next, self()},
-    receive 
+    receive
         Triplet ->
             Triplet
     end.
 
-iterator({}, _) ->
-    {};
 iterator({A, B, C}, N) ->
-    receive 
+    receive
         {next, From} ->
             Triplet = next_triplet(A, B, C, N),
             From ! Triplet,
@@ -97,7 +95,6 @@ iterator({A, B, C}, N) ->
         {close, _} ->
             {}
     end.
-
 
 next_triplet(A, B, C, N) ->
     if

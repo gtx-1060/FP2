@@ -27,7 +27,6 @@ sum_proper_divisors(N, X) when N rem X == 0 ->
 sum_proper_divisors(N, X) ->
     sum_proper_divisors(N, X + 1).
 
-
 %   *** module solution with map ***
 
 solve_map() -> solve_map(10_000).
