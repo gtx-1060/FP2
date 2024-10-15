@@ -1,37 +1,27 @@
-name: Laboratory work 1 Lint & Build
+name: Laboratory work 1
 
 on:
   push:
-    branches: ["master"]
-  pull_request:
-    branches: ["master"]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    branches: [master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    container:
+      image: erlang:27
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-      - name: update
-        run: sudo apt-get update --fix-missing
-      - name: install erlang
-        run: sudo apt install erlang
-      - name: install rebar3
-        run: sudo apt-get install rebar3
-      - name: install python
-        run: sudo apt-get install python3
-        
-      # lint
-      - name: lint erlang code
+      - uses: actions/checkout@v3
+
+      - name: lint
+        working-directory: ${{github.workspace}}
         run: rebar3 lint
-      - name: lint task_8_second
-       # build
-      - name: build erlang code
-        run: cd 8/third/src && make
-      # run tests
-      - name: test erlang code
+
+      - name: compile
+        working-directory: ${{github.workspace}}
+        run: rebar3 compile
+
+      - name: test
+        working-directory: ${{github.workspace}}
         run: rebar3 eunit
